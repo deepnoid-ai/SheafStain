@@ -1,0 +1,33 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Run outputs
+results/
+checkpoints/
+logs/
+wandb/
+
+# Evaluation CSVs written to the repo root by script/run_eval.sh
+quant_*.csv
+bio_*.csv
+
+# Model weights (VFM weights and checkpoints live outside the tree)
+*.pth
+*.pt
+*.ckpt
+
+# OS and editor files
+.DS_Store
+.idea/
+.vscode/
+*.swp

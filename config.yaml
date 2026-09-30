@@ -1,0 +1,63 @@
+### REQUIRED
+vfm_model_path:                 # VFM weights dir (Prov-GigaPath / UNI2-h / Virchow2)
+sheaf_preset_dir:               # precomputed spatial-sheaf presets. Required for training only (base_options.py asserts it under `if opt.isTrain`); inference never reads it.
+
+### Run selectors
+dataroot:                       # dataset root (see README for the layout)
+name: sheafstain                # experiment name (checkpoints/results subdir)
+stain: her2                     # her2 | er | pr | ki67
+vfm_name: gigapath              # gigapath | uni | uni2h | virchow2
+vfm_embed_dim: 1536             # 1536 gigapath/uni2h, 1280 virchow2, 1024 uni
+train_split_mode: mist          # mist | bci
+img_ext: .jpg                   # .jpg (MIST) | .png (BCI)
+gpu_ids: "0"                    # comma list, e.g. "0,1"; "-1" for CPU. run_presets.sh splits the preset range over these devices, one process each.
+num_gpus: 1                     # processes for torchrun (run_train.sh)
+epoch: latest                   # checkpoint tag for inference/eval; loads <checkpoints_dir>/<name>/<epoch>_net_G.pth
+checkpoints_dir: ./checkpoints  # training output root; <checkpoints_dir>/<name>/
+results_dir: ./results          # inference output root. Runs are separated by <phase>_<epoch>_new underneath, so this path carries no epoch of its own
+
+### Training configuration
+model: sb
+dataset_mode: sheaf
+netG: resnet_9blocks_cond
+netD: basic_cond
+num_timesteps: 5
+batch_size: 24                  # per GPU, so the effective batch is batch_size x num_gpus. The paper ran 8 GPUs, for an effective 192. Lower it if memory is tight.
+num_threads: 2                  # DataLoader workers. A rank holds its own copy of a preset (~2x the file size once the fp16 maps become fp32), and each worker adds to that, so raising this runs out of memory before it buys throughput.
+n_epochs: 200                   # epochs at the initial learning rate
+n_epochs_decay: 200             # epochs of linear decay
+vfm_fm_start_epoch: 351         # epoch where the VFM feature-matching loss turns on
+lambda_SB: 1.0
+lambda_vfm_fm: 1.0
+lambda_NCE: 1.0
+lambda_GAN: 1.0
+lambda_sheaf: 1.0               # pixel sheaf (gluing) loss
+lambda_sheaf_cocycle: 0.1       # cocycle (triple-overlap) consistency
+sheaf_rampup_epochs: 0          # sheaf and cocycle losses at full weight from epoch 1 (paper setting; the built-in default ramps over 10 epochs)
+lambda_fourier_edge: 0.5
+lambda_dab_intensity: 0.1
+lambda_sheaf_feat: 0.0
+sb_cost: pixel_mse
+sheaf_cond_dim: 256
+sheaf_spatial: true
+sheaf_injection_mode: additive
+sheaf_agg_mode: agnostic
+sheaf_stride: 80
+sheaf_token_strategy: overlap_interp
+sheaf_preset_selection: stratified
+shuffle_epoch: 1
+sheaf_mean_alpha: 1.0
+return_overlap_patches: true
+grid_augment: true
+use_global_cls: true
+cls_token_type: neighborhood    # neighborhood | global
+
+### Inference configuration
+use_fard: true                  # FARD refinement on/off
+fard_extra: 9                   # adaptive refinement tiles (paper: 9); ignored when use_fard is false
+fard_metric_mode: bimodal       # structured | bimodal | uniform
+test_stride: 192
+
+### Preset generation (run_presets.sh)
+preset_start: 0                 # first preset id (inclusive)
+preset_end: 15                   # last preset id (inclusive); 0..N builds N+1 presets
