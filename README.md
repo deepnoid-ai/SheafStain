@@ -10,7 +10,7 @@
 <div align="center">
   <a href="https://arxiv.org/abs/2606.11846"><img src="https://img.shields.io/badge/Paper-arXiv-b31b1b?logo=arxiv&logoColor=white" alt="Paper (arXiv)"></a>&nbsp;
   <a href="https://github.com/deepnoid-ai/SheafStain"><img src="https://img.shields.io/badge/Code-GitHub-181717?logo=github&logoColor=white" alt="Code (GitHub)"></a>&nbsp;
-  <img src="https://img.shields.io/badge/Gallery-soon-lightgrey?logo=githubpages&logoColor=white" alt="Gallery (coming soon)" title="The gallery page is not published yet">
+  <a href="https://doodleima.github.io/SheafStain-Patho/"><img src="https://img.shields.io/badge/Gallery-GitHub%20Pages-3273DC?logo=githubpages&logoColor=white" alt="Gallery (project page)"></a>
 </div>
 
 <br>
