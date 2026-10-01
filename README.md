@@ -2,7 +2,7 @@
 
 <p align="center">
   Hyeongyeol Lim<sup>1,2</sup>, Hongjun Yoon<sup>2*</sup>, Eunjin Jang<sup>2</sup>, Daeky Jeong<sup>2</sup>, Won June Cho<sup>2</sup>, Hwamin Lee<sup>1*</sup><br>
-  <sup>1</sup>Department of Medical Informatics, College of Medicine, Korea University&nbsp;&nbsp;<sup>2</sup>DEEPNOID Inc.<br>
+  <sup>1</sup>Department of Biomedical Informatics, Korea University College of Medicine&nbsp;&nbsp;<sup>2</sup>DEEPNOID Inc.<br>
   <sup>*</sup>Corresponding authors<br>
   <b>NeurIPS 2026</b>
 </p>
