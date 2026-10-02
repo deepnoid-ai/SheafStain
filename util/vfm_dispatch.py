@@ -20,7 +20,7 @@ class VFMSpec:
     img_size: int             # VFM input resolution (typically 224)
     patch_size: int           # ViT patch size (16 for gigapath, 14 for uni2h/virchow2)
     embed_dim: int            # 1536 (gigapath / uni2h) or 1280 (virchow2)
-    num_prefix_tokens: int    # 1 (CLS only) or 5 (CLS + 4 register tokens)
+    num_prefix_tokens: int    # 1 + register tokens: gigapath 1, virchow2 5, uni2h 9
 
     @property
     def native_grid(self) -> int:
@@ -163,8 +163,9 @@ def _build_uni(model_path: str, device: str) -> VFMWrapper:
 
 
 def _build_uni2h(model_path: str, device: str) -> VFMWrapper:
-    """UNI2-h: ViT-H/14 DINOv2, embed_dim=1536, single CLS token, no registers,
-    SwiGLU-packed FFN. Native grid 16x16 at 224 input."""
+    """UNI2-h: ViT-H/14 DINOv2, embed_dim=1536, CLS + 8 register tokens,
+    SwiGLU-packed FFN. Native grid 16x16 at 224 input.
+    Output token order: [CLS; register x 8; patches]."""
     cfg = _try_load_local_config(model_path) or {}
     img_size    = int(cfg.get('img_size',    224))
     patch_size  = int(cfg.get('patch_size',  14))
@@ -173,12 +174,13 @@ def _build_uni2h(model_path: str, device: str) -> VFMWrapper:
     num_heads   = int(cfg.get('num_heads',   24))
     mlp_ratio   = float(cfg.get('mlp_ratio', 16.0 / 3.0))
     init_values = cfg.get('init_values',     1e-5)
+    reg_tokens  = int(cfg.get('reg_tokens',  8))
 
     create_kwargs = dict(pretrained=False, num_classes=0,
                          img_size=img_size, patch_size=patch_size,
                          embed_dim=embed_dim, depth=depth, num_heads=num_heads,
                          mlp_ratio=mlp_ratio, init_values=init_values,
-                         no_embed_class=True,)
+                         no_embed_class=True, reg_tokens=reg_tokens,)
     
     try:
         create_kwargs['mlp_layer'] = SwiGLUPacked
@@ -192,7 +194,7 @@ def _build_uni2h(model_path: str, device: str) -> VFMWrapper:
     
     spec = VFMSpec(name='uni2h',
                    img_size=img_size, patch_size=patch_size,
-                   embed_dim=embed_dim, num_prefix_tokens=1,)
+                   embed_dim=embed_dim, num_prefix_tokens=1 + reg_tokens,)
 
     return VFMWrapper(model, spec)
 

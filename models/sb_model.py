@@ -235,7 +235,7 @@ class SBModel(BaseModel):
         """Spec-aware split of `forward_features` output into (cls, grid).
 
         Handles:
-          - num_prefix_tokens: GigaPath/UNI2-h=1 (CLS only), Virchow2=5 (CLS+4 reg).
+          - num_prefix_tokens: GigaPath=1 (CLS only), UNI2-h=9 (CLS+8 reg), Virchow2=5 (CLS+4 reg).
           - native grid: GigaPath=14 (no resample), UNI2-h/Virchow2=16 -> bilinear
             resample to 14 so downstream code keeps its 14x14 / token_px=16
             convention (the same convention the spatial presets store).
