@@ -89,6 +89,12 @@ PRESET_START=0 PRESET_END=8 bash script/run_presets.sh   # override the id range
 GPUS=0,1 bash script/run_presets.sh                      # override the GPUs
 ```
 
+To build more diverse presets, pass `--sheaf_cache_refresh_freq 1` after the config path.
+
+```bash
+bash script/run_presets.sh config.yaml --sheaf_cache_refresh_freq 1
+```
+
 The runner splits the preset ids across the GPUs in `gpu_ids`, one process per
 GPU, and writes the logs to `sheaf_preset_dir/preset_gpu<id>.log`.
 
